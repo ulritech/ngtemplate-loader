@@ -48,10 +48,8 @@ module.exports = function (content) {
         html = content;
     }
 
-    return "var path = '"+jsesc(filePath)+"';\n" +
-        "var html = " + html + ";\n" +
-        "window.angular.module('" + ngModule + "').run(['$templateCache', function(c) { c.put(path, html) }]);\n" +
-        "module.exports = path;";
+    return "$templateCache.put('" + jsesc(filePath) + "', " +
+        html + ");\n";
 
     function findQuote(content, backwards) {
         var i = backwards ? content.length - 1 : 0;
