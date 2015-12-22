@@ -48,8 +48,9 @@ module.exports = function (content) {
         html = content;
     }
 
-    return "$templateCache.put('" + jsesc(filePath) + "', " +
-        html + ");\n";
+    // Escape all double quotes
+    return "module.exports = '$templateCache.put(\"" + jsesc(filePath) + 
+        "\", " + html.replace(/"/g, '\\"') + ");\\n';";
 
     function findQuote(content, backwards) {
         var i = backwards ? content.length - 1 : 0;
