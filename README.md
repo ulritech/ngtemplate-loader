@@ -6,6 +6,37 @@ to remove initial load times of templates.
 ngTemplate loader does not minify or process your HTML at all, and instead uses the standard loaders such as html-loader
 or raw-loader. This gives you the flexibility to pick and choose your HTML loaders.
 
+## Motivation
+WearyMonkey's stock version creates a separate module addition for each template:
+
+``` javascript
+// file: template1.html
+var path = 'template1.html';
+var html = '<your html here>';
+window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
+module.exports = path;
+
+// file: template2.html
+var path = 'template2.html';
+var html = '<your html here>';
+window.angular.module('ng').run(['$templateCache', function(c) { c.put(path, html) }]);
+module.exports = path;
+```
+
+While this works just fine, I prefer creating / caching all my angular templates one after the other in a single module declaration / definition:
+
+``` javascript
+// files: template1.html, template2.html
+window.angular.module('ng')
+.run(['$templateCache', function($templateCache) {
+    $templateCache.put('template1.html', '<your html here>');
+    $templateCache.put('template2.html', '<your html here>');
+}]);
+module.exports = path;
+```
+
+This fork tweaks the output to only output the lines where the relevant HTML is injected into the templateCache. By itself, this loader does not work on its own because it is not properly wrapped in an angular.module() block. It is intended to be paired with ExtractTextPlugin (to extract all template caching's) and EncloseFileContentsPlugin (to surround this text with the proper angular module code.
+
 ## Install
 
 `npm install ngtemplate-loader --save`
